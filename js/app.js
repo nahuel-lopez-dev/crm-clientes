@@ -1,4 +1,6 @@
-// función autoinvocada: 
+// IIFE: Expresión de función ejecutada inmediatamente
+// Es un patrón de diseño también conocido como función autoejecutable
+// o sólo función autoinvocada: 
 // las variables y las funciones declaradas dentro de ella no son accesibles desde fuera
 // Van a ser locales del contexto de la función.
 // si hay una variable cliente, no se va a pisar con la variable cliente que se declara dentro de la función
