@@ -37,6 +37,7 @@
         }
 
         // Crear un objeto con la información
+        // Object literal enhancement (lo contrario a destructuring)
         const cliente = {
             nombre,
             email,
@@ -44,10 +45,32 @@
             empresa,
             id: Date.now()
         };
+        console.log(cliente);
         // función para crear un nuevo cliente (la voy a tener que incorporar después)
         // función a desarrollar
         crearNuevoCliente(cliente);
     }
+
+    // Inserta un nuevo cliente en la base de datos
+    function crearNuevoCliente(cliente){
+        const transaction = DB.transaction(['crm'], 'readwrite');
+        const objectStore = transaction.objectStore('crm');
+
+        objectStore.add(cliente);
+
+        transaction.onerror = function(){
+            imprimirAlerta('Hubo un error', 'error');
+        };
+
+        transaction.oncomplete = function(){
+            imprimirAlerta('El cliente se agregó correctamente');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 3000);
+        };
+
+    }
+
     // Función para imprimir el alerta
     function imprimirAlerta(mensaje, tipo){
         
