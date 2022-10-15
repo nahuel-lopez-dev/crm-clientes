@@ -1,100 +1,102 @@
 // IIFE: Expresión de función ejecutada inmediatamente
-(function(){
+(function() {
     let DB;
+
     const formulario = document.querySelector('#formulario');
 
-    document.addEventListener('DOMContentLoaded', function(){
-        conectarDB();
+    document.addEventListener('DOMContentLoaded', () => {
         formulario.addEventListener('submit', validarCliente);
+
+        conectarDB();
     });
 
-    // Conecta a la base de datos
-    function conectarDB(){
-        const abrirConexion = indexedDB.open('crm', 1);
+    function conectarDB() {
+        // ABRE LA CONEXIÓN EN LA BD:
 
-        abrirConexion.onerror = function(){
+        let abrirConexion = window.indexedDB.open('crm', 1);
+
+        // Si hay un error, se lanza
+        abrirConexion.onerror = function() {
             console.log('Hubo un error');
         };
-
-        abrirConexion.onsuccess = function(){
+    
+        // Si todo esta bien, se asigna a database el resultado
+        abrirConexion.onsuccess = function() {
+            // Se guarda el resultado
             DB = abrirConexion.result;
         };
     }
 
-    // Valida el formulario
-    function validarCliente(e){
+    function validarCliente(e) {
         e.preventDefault();
 
-        // Leer todos los inputs
         const nombre = document.querySelector('#nombre').value;
         const email = document.querySelector('#email').value;
         const telefono = document.querySelector('#telefono').value;
         const empresa = document.querySelector('#empresa').value;
 
-        if(nombre === '' || email === '' || telefono === '' || empresa === ''){
+        if(nombre === '' || email === '' || telefono === '' || empresa === '') {
             imprimirAlerta('Todos los campos son obligatorios', 'error');
             return;
         }
 
-        // Crear un objeto con la información
-        // Object literal enhancement (lo contrario a destructuring)
+        // Añadir a la BD...
+        // Crear un nuevo objeto con toda la info
         const cliente = {
-            nombre,
+            nombre, 
             email,
             telefono,
-            empresa,
-            id: Date.now()
+            empresa
         };
-        console.log(cliente);
-        // función para crear un nuevo cliente (la voy a tener que incorporar después)
-        // función a desarrollar
+
+        // Genera un ID único
+        cliente.id = Date.now();
+
         crearNuevoCliente(cliente);
     }
 
-    // Inserta un nuevo cliente en la base de datos
-    function crearNuevoCliente(cliente){
+    function crearNuevoCliente(cliente) {
+
+        // NUEVO: 
         const transaction = DB.transaction(['crm'], 'readwrite');
         const objectStore = transaction.objectStore('crm');
-
+        // console.log(objectStore);
         objectStore.add(cliente);
 
-        transaction.onerror = function(){
-            imprimirAlerta('Hubo un error', 'error');
-        };
+        transaction.oncomplete = () => {
+            console.log('Cliente Agregado');
 
-        transaction.oncomplete = function(){
-            imprimirAlerta('El cliente se agregó correctamente');
+            // Mostrar mensaje de que todo esta bien...
+            imprimirAlerta('Se agregó correctamente');
+
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 3000);
         };
 
+        transaction.onerror = () => {
+            console.log('Hubo un error!');
+            imprimirAlerta('Hubo un Error', 'error');
+        };
     }
 
-    // Función para imprimir el alerta
-    function imprimirAlerta(mensaje, tipo){
-        
-        const alerta = document.querySelector('.alerta');
-        if(!alerta){
-            // Crear el div
-            const divMensaje = document.createElement('div');
-            divMensaje.classList.add('px-4', 'py-3', 'rounded', 'max-w-lg', 'mx-auto', 'mt-6', 'text-center', 'border', 'alerta');
-    
-            if(tipo === 'error'){
-                divMensaje.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
-            } else {
-                divMensaje.classList.add('bg-green-100', 'border-green-400', 'text-green-700');
-            }
-    
-            // Mensaje de error
-            divMensaje.textContent = mensaje;
-    
-            // Insertar en el HTML
-            formulario.appendChild(divMensaje);
-    
-            setTimeout(() => {
-                divMensaje.remove();
-            }, 3000);
-        }
+    function imprimirAlerta(mensaje, tipo) {
+         // Crea el div
+         const divMensaje = document.createElement('div');
+         divMensaje.classList.add( "px-4", "py-3", "rounded",  "max-w-lg", "mx-auto", "mt-6", "text-center" );
+
+         if(tipo === 'error') {
+            divMensaje.classList.add('bg-red-100', "border-red-400", "text-red-700");
+         } else {
+             divMensaje.classList.add('bg-green-100', "border-green-400", "text-green-700");
+         }
+         // Mensaje de error
+         divMensaje.textContent = mensaje;
+         // Inserta en el DOM
+        formulario.appendChild(divMensaje);
+         // Quita el alert despues de 3 segundos
+         setTimeout( () => {
+             divMensaje.remove();
+         }, 3000);
     }
 })();
