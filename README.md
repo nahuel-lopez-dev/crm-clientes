@@ -25,18 +25,14 @@ El proyecto es un CRM de clientes, que usa IndexedDB como base de datos. Para la
 <!-- - [CSS](https://developer.mozilla.org/es/docs/Web/CSS) -->
 
 
-<!-- ## **Screenshots:**
+## **Screenshots:**
 
-### 1. Home:
-## ![](public/images/flujo-compra/home.png)
+### 1. Clientes:
+## ![](img/clientes.png)
 
-### 2. Detalle del producto seleccionado:
+### 2. Nuevo Cliente:
 
-## ![](public/images/flujo-compra/detalle-producto.png)
-
-### 3. Carrito de compras, con productos seleccionados:
-
-## ![](public/images/flujo-compra/carrito-compra.png) -->
+## ![](img/nuevo-cliente.png)
 
   <!-- Hecho con amor -->
 [![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://GitHub.com/Nahuel-Devone/)
