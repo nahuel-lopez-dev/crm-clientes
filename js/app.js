@@ -22,22 +22,52 @@
     function eliminarRegistro(e) {
         if(e.target.classList.contains('eliminar')) {
             const idEliminar = Number(e.target.dataset.cliente);
-            const confirmar = confirm('¿Deseas eliminar este cliente?');
+            // const confirmar = confirm('¿Deseas eliminar este cliente?');
+            const confirmar = Swal.fire({
+                title: '¿Deseas eliminar este cliente?',
+                text: "¡No podrás revertir esta acción!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#295e60',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '¡Si borrar de todas formas!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  Swal.fire(
+                    '¡Borrado!',
+                    'El cliente se ha borrado correctamente.',
+                    'success'
+                  )
+
+                    const transaction = DB.transaction(['crm'], 'readwrite');
+                    const objectStore = transaction.objectStore('crm');
+                    objectStore.delete(idEliminar);
+                    
+                    transaction.oncomplete = function() {
+                        console.log('Eliminado');
+                        e.target.parentElement.parentElement.remove();
+                    }
+                    
+                    transaction.onerror = function() {
+                        console.log('Hubo un error');
+                    }
+                }
+              })
     
-            if(confirmar) {
-                const transaction = DB.transaction(['crm'], 'readwrite');
-                const objectStore = transaction.objectStore('crm');
-                objectStore.delete(idEliminar);
+            // if(confirmar) {
+            //     const transaction = DB.transaction(['crm'], 'readwrite');
+            //     const objectStore = transaction.objectStore('crm');
+            //     objectStore.delete(idEliminar);
                 
-                transaction.oncomplete = function() {
-                    console.log('Eliminado');
-                    e.target.parentElement.parentElement.remove();
-                }
-                
-                transaction.onerror = function() {
-                    console.log('Hubo un error');
-                }
-            }
+            //     transaction.oncomplete = function() {
+            //         console.log('Eliminado');
+            //         e.target.parentElement.parentElement.remove();
+            //     }
+
+            //     transaction.onerror = function() {
+            //         console.log('Hubo un error');
+            //     }
+            // }
         }
     }
 
